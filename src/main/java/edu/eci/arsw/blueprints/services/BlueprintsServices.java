@@ -5,15 +5,14 @@
  */
 package edu.eci.arsw.blueprints.services;
 
-import edu.eci.arsw.blueprints.model.Blueprint;
-import edu.eci.arsw.blueprints.model.Point;
-import edu.eci.arsw.blueprints.persistence.BlueprintNotFoundException;
-import edu.eci.arsw.blueprints.persistence.BlueprintsPersistence;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import edu.eci.arsw.blueprints.model.Blueprint;
+import edu.eci.arsw.blueprints.persistence.BlueprintNotFoundException;
+import edu.eci.arsw.blueprints.persistence.BlueprintsPersistence;
 
 /**
  *
@@ -22,8 +21,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class BlueprintsServices {
    
+    private final BlueprintsPersistence bpp;
+
     @Autowired
-    BlueprintsPersistence bpp=null;
+    public BlueprintsServices(BlueprintsPersistence bpp){
+        this.bpp=bpp;
+    }
     
     public void addNewBlueprint(Blueprint bp){
         
@@ -41,7 +44,7 @@ public class BlueprintsServices {
      * @throws BlueprintNotFoundException if there is no such blueprint
      */
     public Blueprint getBlueprint(String author,String name) throws BlueprintNotFoundException{
-        throw new UnsupportedOperationException("Not supported yet."); 
+        return bpp.getBlueprint(author, name);
     }
     
     /**
@@ -51,7 +54,7 @@ public class BlueprintsServices {
      * @throws BlueprintNotFoundException if the given author doesn't exist
      */
     public Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException{
-        throw new UnsupportedOperationException("Not supported yet."); 
+        return bpp.getBlueprintByAuthor(author);
     }
     
 }
