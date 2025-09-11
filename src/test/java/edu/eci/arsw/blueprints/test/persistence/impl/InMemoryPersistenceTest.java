@@ -38,7 +38,6 @@ public class InMemoryPersistenceTest {
         assertNotNull("Loading a previously stored blueprint returned null.",ibpp.getBlueprint(bp.getAuthor(), bp.getName()));
         
         assertEquals("Loading a previously stored blueprint returned a different blueprint.",ibpp.getBlueprint(bp.getAuthor(), bp.getName()), bp);
-        
     }
 
 
@@ -65,10 +64,39 @@ public class InMemoryPersistenceTest {
         catch (BlueprintPersistenceException ex){
             
         }
-                
-        
     }
 
+    @Test
+    public void getNonExistingBlueprintTest() {
+        InMemoryBlueprintPersistence ibpp = new InMemoryBlueprintPersistence();
+        try {
+            ibpp.getBlueprint("ghost", "phantom");
+            fail("Expected BlueprintNotFoundException for non-existing blueprint");
+        } catch (BlueprintNotFoundException e) {
+            // OK
+        }
+    }
 
-    
+    @Test
+    public void getBlueprintsByAuthorTest() throws Exception {
+        InMemoryBlueprintPersistence ibpp = new InMemoryBlueprintPersistence();
+
+        Point[] pts1 = new Point[]{ new Point(0, 0), new Point(10, 10) };
+        Point[] pts2 = new Point[]{ new Point(20, 20), new Point(30, 30) };
+
+        Blueprint bp1 = new Blueprint("alice", "house", pts1);
+        Blueprint bp2 = new Blueprint("alice", "garden", pts2);
+
+        ibpp.saveBlueprint(bp1);
+        ibpp.saveBlueprint(bp2);
+
+        assertEquals("Author should have 2 blueprints", 
+                    2, ibpp.getBlueprintsByAuthor("alice").size());
+    }
+
+    @Test(expected = BlueprintNotFoundException.class)
+    public void getBlueprintsByAuthorNotFoundTest() throws Exception {
+        InMemoryBlueprintPersistence ibpp = new InMemoryBlueprintPersistence();
+        ibpp.getBlueprintsByAuthor("nonexistent");
+    }
 }

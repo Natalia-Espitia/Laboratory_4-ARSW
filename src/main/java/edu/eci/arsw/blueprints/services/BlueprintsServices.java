@@ -20,41 +20,56 @@ import edu.eci.arsw.blueprints.persistence.BlueprintsPersistence;
  */
 @Service
 public class BlueprintsServices {
-   
     private final BlueprintsPersistence bpp;
+    private final BlueprintFilter blueprintFilter;
 
     @Autowired
-    public BlueprintsServices(BlueprintsPersistence bpp){
-        this.bpp=bpp;
+    public BlueprintsServices(BlueprintsPersistence bpp, BlueprintFilter blueprintFilter) {
+        this.bpp = bpp;
+        this.blueprintFilter = blueprintFilter;
     }
-    
-    public void addNewBlueprint(Blueprint bp){
-        
+
+    public void addNewBlueprint(Blueprint bp) {
+        try {
+            bpp.saveBlueprint(bp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-    
-    public Set<Blueprint> getAllBlueprints(){
-        return null;
+
+    public Set<Blueprint> getAllBlueprints() {
+        Set<Blueprint> all = bpp.getAllBlueprints();
+        if (blueprintFilter == null) return all;
+        Set<Blueprint> filtered = new java.util.HashSet<>();
+        for (Blueprint bp : all) {
+            filtered.add(blueprintFilter.filter(bp));
+        }
+        return filtered;
     }
-    
+
     /**
-     * 
      * @param author blueprint's author
      * @param name blueprint's name
      * @return the blueprint of the given name created by the given author
      * @throws BlueprintNotFoundException if there is no such blueprint
      */
-    public Blueprint getBlueprint(String author,String name) throws BlueprintNotFoundException{
-        return bpp.getBlueprint(author, name);
+    public Blueprint getBlueprint(String author, String name) throws BlueprintNotFoundException {
+        Blueprint bp = bpp.getBlueprint(author, name);
+        return blueprintFilter != null ? blueprintFilter.filter(bp) : bp;
     }
-    
+
     /**
-     * 
      * @param author blueprint's author
      * @return all the blueprints of the given author
      * @throws BlueprintNotFoundException if the given author doesn't exist
      */
-    public Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException{
-        return bpp.getBlueprintByAuthor(author);
+    public Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException {
+        Set<Blueprint> bps = bpp.getBlueprintsByAuthor(author);
+        if (blueprintFilter == null) return bps;
+        Set<Blueprint> filtered = new java.util.HashSet<>();
+        for (Blueprint bp : bps) {
+            filtered.add(blueprintFilter.filter(bp));
+        }
+        return filtered;
     }
-    
 }

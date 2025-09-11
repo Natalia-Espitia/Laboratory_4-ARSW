@@ -16,12 +16,16 @@ import edu.eci.arsw.blueprints.model.Blueprint;
 public interface BlueprintsPersistence {
     
     /**
-     * 
      * @param bp the new blueprint
      * @throws BlueprintPersistenceException if a blueprint with the same name already exists,
      *    or any other low-level persistence error occurs.
      */
     public void saveBlueprint(Blueprint bp) throws BlueprintPersistenceException;
+
+    /** 
+     * @return all the blueprints in the persistence system
+     */
+    public Set<Blueprint> getAllBlueprints();
     
     /**
      * 
@@ -38,6 +42,6 @@ public interface BlueprintsPersistence {
      * @return all the blueprints of the given author
      * @throws BlueprintNotFoundException if the given author doesn't exist
      */
-    public Set<Blueprint> getBlueprintByAuthor(String author) throws BlueprintNotFoundException;
+    public Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException;
     
 }
